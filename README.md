@@ -6,4 +6,5 @@ OpenSource Libraries/ Dependencies:
 *GLEW
 *stb_image
 
+Screen shot of the OBJ file loading into the project in wireframe mode.
 ![](sylvanasImage.png)
