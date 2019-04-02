@@ -16,6 +16,11 @@ OpenSource Libraries/ Dependencies:
 *GLEW
 *stb_image
 
+<<<<<<< HEAD
 Loading a free Sylvanas model I found online in Wireframe mode.
 
  
+=======
+Screen shot of the OBJ file loading into the project in wireframe mode.
+![](sylvanasImage.png)
+>>>>>>> dce3172d84e537e7e1c4239176cce1736e9bc729
