@@ -10,6 +10,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "mesh.h"
+#include "camera.h"
+
+using namespace Camera;
 
 #define log(x) std::cout << x << std::endl;
 
@@ -23,8 +26,10 @@ const float toRadians = 3.14159265359f / 180.0f;
 
 /*Callback functions*/
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void mouse_Quaternion_callback(GLFWwindow* window, double xPos, double yPos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
 
 const char *vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 pos;\n"
@@ -122,11 +127,19 @@ int shaderProgram;
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 camera_look_at;
+
+/*Quaternion Camera Attributes*/
+glm::vec3 left = glm::vec3(-1.0f, 0.0f, 0.0f);
+glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 forward = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::mat4 viewMatrix;
 
 /*Rotation*/
 bool firstMove = true;
 float yaw = 0.0f;
 float pitch = 0.0f;
+float roll = 0.0f;
 float lastX = width / 2.0f;
 float lastY = height / 2.0f;
 float fov = 45.0f;
@@ -205,7 +218,7 @@ int main()
 
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetCursorPosCallback(window, mouse_Quaternion_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -228,7 +241,7 @@ int main()
 	Mesh mesh[numModels];
 	
 	//Just loading one mesh
-	mesh[0].loadOBJ("Lamborghini_Aventador.obj");
+	mesh[0].loadOBJ("robot.obj");
 
 	///*VAO*/
 	//GLuint VAO;
@@ -280,15 +293,18 @@ int main()
 		
 		/*Projection*/
 		glm::mat4 projection = glm::perspective(fov, (float)width / (float)height, 0.1f, 100.0f);
+		//Set value to vertex shader
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 
 		/*Camera*/
-		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		//glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		glm::mat4 translate = glm::translate(glm::mat4(), -cameraPos);
+		glm::mat4 view = viewMatrix * translate;
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view));
 
 
 		/*Drawing character*/
-		glm::mat4 characterModel = glm::translate(glm::mat4(), characterPos) * glm::rotate(glm::mat4(), rotation * toRadians, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(), glm::vec3(0.02f, 0.02f, 0.02f));
+		glm::mat4 characterModel = glm::translate(glm::mat4(), characterPos) * glm::rotate(glm::mat4(), rotation * toRadians, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(), glm::vec3(0.5f, 0.5f, 0.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(characterModel));
 		mesh[0].draw();
 
@@ -382,6 +398,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	{
 		lastX = xpos;
 		lastY = ypos;
+
+
+
 		firstMove = false;
 	}
 
@@ -409,6 +428,50 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 	cameraFront = glm::normalize(front);
 
+}
+
+void mouse_Quaternion_callback(GLFWwindow* window, double xpos, double ypos)
+{
+
+
+	if (firstMove)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMove = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos;
+	lastX = xpos;
+	lastY = ypos;
+
+	float sensitivity = 0.003f;
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	yaw += xoffset;
+	pitch += yoffset;
+
+
+	glm::quat qPitch = glm::angleAxis(pitch, glm::vec3(-1, 0, 0));
+	glm::quat qYaw = glm::angleAxis(yaw, glm::vec3(0, 1, 0));
+	glm::quat qRoll = glm::angleAxis(roll, glm::vec3(0, 0, 1));
+
+	//For a FPS camera we can omit roll
+	glm::quat orientation = qPitch * qYaw;
+	orientation = glm::normalize(orientation);
+	glm::mat4 rotate = glm::mat4_cast(orientation);
+
+	glm::mat4 translate = glm::mat4(1.0f);
+	
+
+	/*glm::vec3 front;
+	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front.y = sin(glm::radians(pitch));
+	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));*/
+
+	viewMatrix = rotate * translate;
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
