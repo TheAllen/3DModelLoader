@@ -1,10 +1,19 @@
 ﻿  main.cpp
-c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(266): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(383): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(384): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(388): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(389): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(390): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(391): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(418): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(298): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(422): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(423): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(430): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(431): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(432): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(433): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(462): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(463): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(467): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(468): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(469): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(470): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\allen\source\repos\openglproject1\openglproject1\main.cpp(505): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+  texture.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   OpenGLProject1.vcxproj -> C:\Users\allen\source\repos\OpenGLProject1\Debug\OpenGLProject1.exe

@@ -31,4 +31,14 @@ namespace Camera
 	{
 		return cameraUp;
 	}
+
+	void Camera::updateView()
+	{
+
+	}
+
+	void Camera::mouseMove()
+	{
+
+	}
 }

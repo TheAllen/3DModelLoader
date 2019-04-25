@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdio.h>
+#include <string.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "stb_image.h"
@@ -11,6 +12,9 @@
 
 #include "mesh.h"
 #include "camera.h"
+#include "texture.h"
+
+//#include <assimp/Importer.hpp>
 
 using namespace Camera;
 
@@ -151,6 +155,9 @@ float lastTime = 0.0f;
 /*WireFrame*/
 bool wireFrame = false;
 
+/*Textures*/
+//Texture robotTexture = Texture("textures/robot_diffue.jpg");
+
 void processInput(GLFWwindow* window);
 
 void createShaders()
@@ -240,8 +247,15 @@ int main()
 	const int numModels = 1;
 	Mesh mesh[numModels];
 	
+
+	std::vector<glm::vec3> positions;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::vec2> uvCoords;
+
+
 	//Just loading one mesh
 	mesh[0].loadOBJ("robot.obj");
+	//mesh[0].loadOBJ1("robot.obj", positions, normals, uvCoords);
 
 	///*VAO*/
 	//GLuint VAO;
@@ -267,9 +281,14 @@ int main()
 
 	createShaders();
 
+	/*Textures*/
+	//robotTexture.loadTexture();
+
 	GLuint uniformProjection = glGetUniformLocation(shaderProgram, "projection");
 	GLuint uniformView = glGetUniformLocation(shaderProgram, "view");
 	GLuint uniformModel = glGetUniformLocation(shaderProgram, "model");
+
+	//Assimp::Importer importer = Assimp::Importer();
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -286,7 +305,7 @@ int main()
 
 		processInput(window);
 
-		glClearColor(0.2f, 0.2f, 0.8f, 1.0f);
+		glClearColor((float)(154.0/255.0), (float)(167.0/255.0), (float)(188.0/255.0), 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
@@ -302,9 +321,11 @@ int main()
 		glm::mat4 view = viewMatrix * translate;
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(view));
 
+		//robotTexture.useTexture();
+
 
 		/*Drawing character*/
-		glm::mat4 characterModel = glm::translate(glm::mat4(), characterPos) * glm::rotate(glm::mat4(), rotation * toRadians, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(), glm::vec3(0.5f, 0.5f, 0.5f));
+		glm::mat4 characterModel = glm::translate(glm::mat4(), characterPos) * glm::rotate(glm::mat4(), rotation * toRadians, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(glm::mat4(), glm::vec3(0.025f, 0.025f, 0.025f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(characterModel));
 		mesh[0].draw();
 
@@ -338,6 +359,7 @@ int main()
 
 void processInput(GLFWwindow* window)
 {
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
@@ -368,6 +390,7 @@ void processInput(GLFWwindow* window)
 	{
 		cameraPos -= cameraUp * cameraSpeed;
 	}
+	
 
 	
 	if (glfwGetKey(window, GLFW_KEY_Q) != GLFW_RELEASE)
@@ -459,7 +482,7 @@ void mouse_Quaternion_callback(GLFWwindow* window, double xpos, double ypos)
 	glm::quat qRoll = glm::angleAxis(roll, glm::vec3(0, 0, 1));
 
 	//For a FPS camera we can omit roll
-	glm::quat orientation = qPitch * qYaw;
+	glm::quat orientation = qPitch * qYaw * qRoll;
 	orientation = glm::normalize(orientation);
 	glm::mat4 rotate = glm::mat4_cast(orientation);
 
@@ -476,6 +499,7 @@ void mouse_Quaternion_callback(GLFWwindow* window, double xpos, double ypos)
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
+	
 	if (fov >= 1.0f && fov <= 45.0f)
 	{
 		fov -= yoffset * 0.05f;
@@ -484,4 +508,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 		fov = 1.0f;
 	if (fov >= 45.0f)
 		fov = 45.0f;
+
+	
+	//roll += yoffset * 0.5f;
 }

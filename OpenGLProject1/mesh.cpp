@@ -52,6 +52,7 @@ bool Mesh::loadOBJ(const std::string& filename)
 {
 	std::vector<unsigned int> vertexIndices, uvIndices;
 	std::vector<glm::vec3> tempVertices;
+	//std::vector<glm::vec3> tempNormals;
 	std::vector<glm::vec2> tempUVs;
 
 	if (filename.find(".obj") != std::string::npos)
@@ -75,7 +76,19 @@ bool Mesh::loadOBJ(const std::string& filename)
 				v >> vertex.x; v >> vertex.y; v >> vertex.z;
 				tempVertices.push_back(vertex);
 			}
-			else if (lineBuffer.substr(0, 2) == "vt")
+
+			// Normal data
+			/*else if (lineBuffer.substr(0, 3) == "vn ")
+			{
+				std::istringstream s(lineBuffer.substr(2));
+				glm::vec3 normal;
+				s >> normal.x;
+				s >> normal.y;
+				s >> normal.z;
+				tempNormals.push_back(normal);
+			}*/
+
+			else if (lineBuffer.substr(0, 3) == "vt ")
 			{
 				std::istringstream vt(lineBuffer.substr(3));
 				glm::vec2 uv;
@@ -88,7 +101,7 @@ bool Mesh::loadOBJ(const std::string& filename)
 				int t1, t2, t3;
 				int n1, n2, n3;
 				const char* face = lineBuffer.c_str();
-				int match = sscanf_s(face, "f %i/%i/%i %i/%i/%i %i/%i/%i",
+				int match = sscanf_s(face, "f %d/%d/%d %d/%d/%d %d/%d/%d",
 					&p1, &t1, &n1,
 					&p2, &t2, &n2,
 					&p3, &t3, &n3);
@@ -97,10 +110,15 @@ bool Mesh::loadOBJ(const std::string& filename)
 					std::cout << "Failed to parse OBJ file using our very simple OBJ loader" << std::endl;
 				}
 
-				//Ignoring normals for now
+			
 				vertexIndices.push_back(p1);
 				vertexIndices.push_back(p2);
 				vertexIndices.push_back(p3);
+
+				/*normalIndices.push_back(n1);
+				normalIndices.push_back(n2);
+				normalIndices.push_back(n3);*/
+
 
 				uvIndices.push_back(t1);
 				uvIndices.push_back(t2);
@@ -115,11 +133,13 @@ bool Mesh::loadOBJ(const std::string& filename)
 		{
 			// Get the attributes using the indices
 			glm::vec3 vertex = tempVertices[vertexIndices[i] - 1];
+			//glm::vec3 normals = tempNormals[normalIndices[i] - 1];
 			glm::vec2 uv = tempUVs[uvIndices[i] - 1];
 
 			Vertex meshVertex;
 			meshVertex.position = vertex;
 			meshVertex.texCoord = uv;
+			//meshVertex.normals = normals;
 
 			mVertices.push_back(meshVertex);
 		}
@@ -130,4 +150,135 @@ bool Mesh::loadOBJ(const std::string& filename)
 	}
 
 	return false;
+}
+
+void Mesh::loadOBJ1(const char* path, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, std::vector<glm::vec2>& uvCoords)
+{
+	std::ifstream in(path, std::ios::in);
+	in.exceptions(std::ifstream::badbit);
+
+	/*Error Handler*/
+	if (!in)
+	{
+		std::stringstream errorMessage;
+		errorMessage << "Unable to open .OBJ file " << path << "." << std::endl;
+		return;
+	}
+
+	std::string currentline;
+	/*Positon*/
+	int positionIndexA;
+	int positionIndexB;
+	int positionIndexC;
+	/*Normals*/
+	int normalIndexA;
+	int normalIndexB;
+	int normalIndexC;
+	/*UVs*/
+	int uvCoordIndexA;
+	int uvCoordIndexB;
+	int uvCoordIndexC;
+	std::vector<glm::vec3> temp_positions;
+	std::vector<glm::vec3> temp_normals;
+	std::vector<glm::vec2> temp_uvCoords;
+
+	while (!in.eof())
+	{
+		try {
+			std::getline(in, currentline);
+		}
+		catch (const std::ifstream::failure &e)
+		{
+			in.close();
+			std::stringstream errorMessage;
+			errorMessage << "Error calling reading line " << e.what() << std::endl;
+			return;
+		}
+
+		//Vertex data 
+		if (currentline.substr(0, 2) == "v ")
+		{
+			//Get entire line excluding the first two chars
+			std::istringstream s(currentline.substr(2));
+			glm::vec3 vertex;
+			s >> vertex.x;
+			s >> vertex.y;
+			s >> vertex.z;
+			temp_positions.push_back(vertex);
+		}
+
+		// Normal data
+		else if (currentline.substr(0, 3) == "vn ")
+		{
+			std::istringstream s(currentline.substr(2));
+			glm::vec3 normal;
+			s >> normal.x;
+			s >> normal.y;
+			s >> normal.z;
+			temp_normals.push_back(normal);
+		}
+
+		//Texture coordinates
+		else if (currentline.substr(0, 3) == "vt ")
+		{
+			std::istringstream s(currentline.substr(2));
+			glm::vec2 textureCoords;
+			s >> textureCoords.x;
+			s >> textureCoords.y;
+			temp_uvCoords.push_back(textureCoords);
+		}
+
+		else if (currentline.substr(0, 2) == "f ")
+		{
+			int index;
+
+			int numberOfIndexMatches = sscanf_s(currentline.c_str(), "f %d/%d/%d", &index, &index, &index);
+			if (numberOfIndexMatches == 3)
+			{
+				sscanf_s(currentline.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d",
+					&positionIndexA, &uvCoordIndexA, &normalIndexA,
+					&positionIndexB, &uvCoordIndexB, &normalIndexB,
+					&positionIndexC, &uvCoordIndexC, &normalIndexC);
+
+				//Starting at 0
+				uvCoordIndexA--;
+				uvCoordIndexB--;
+				uvCoordIndexC--;
+
+				uvCoords.push_back(temp_uvCoords[uvCoordIndexA]);
+				uvCoords.push_back(temp_uvCoords[uvCoordIndexB]);
+				uvCoords.push_back(temp_uvCoords[uvCoordIndexC]);
+			}
+			else
+			{
+				sscanf_s(currentline.c_str(), "f %d//%d %d//%d %d//%d", &positionIndexA, &normalIndexA,
+					&positionIndexB, &normalIndexB,
+					&positionIndexC, &normalIndexC);
+			}
+
+			positionIndexA--;
+			positionIndexB--;
+			positionIndexC--;
+			normalIndexA--;
+			normalIndexB--;
+			normalIndexC--;
+
+			positions.push_back(temp_positions[positionIndexA]);
+			positions.push_back(temp_positions[positionIndexB]);
+			positions.push_back(temp_positions[positionIndexC]);
+
+			normals.push_back(temp_normals[normalIndexA]);
+			normals.push_back(temp_normals[normalIndexB]);
+			normals.push_back(temp_normals[normalIndexC]);
+
+		}
+	}
+
+	in.close();
+
+}
+
+void Mesh::loadOBJ2(const char* path, std::vector<glm::vec3>& position, std::vector<glm::vec3>& normals)
+{
+
 }

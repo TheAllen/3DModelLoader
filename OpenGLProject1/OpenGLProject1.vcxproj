@@ -76,11 +76,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\allen\source\repos\OpenGLProject1\External Folder\glm-0.9.6.3\glm;C:\Users\allen\source\repos\OpenGLProject1\External Folder\GLFW\glfw-3.2.1.bin.WIN32\include;C:\Users\allen\source\repos\OpenGLProject1\External Folder\GLEW\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\allen\source\repos\OpenGLProject1\External Folder\ASSIMP\include;C:\Users\allen\source\repos\OpenGLProject1\External Folder\glm-0.9.6.3\glm;C:\Users\allen\source\repos\OpenGLProject1\External Folder\GLFW\glfw-3.2.1.bin.WIN32\include;C:\Users\allen\source\repos\OpenGLProject1\External Folder\GLEW\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\allen\source\repos\OpenGLProject1\External Folder\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\Users\allen\source\repos\OpenGLProject1\External Folder\GLEW\glew-2.1.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\allen\source\repos\OpenGLProject1\External Folder\ASSIMP\lib;C:\Users\allen\source\repos\OpenGLProject1\External Folder\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\Users\allen\source\repos\OpenGLProject1\External Folder\GLEW\glew-2.1.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -120,16 +120,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
+    <ClCompile Include="model.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="mesh.h" />
+    <ClInclude Include="model.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader.frag" />
+    <None Include="shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
