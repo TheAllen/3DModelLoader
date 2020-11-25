@@ -1,3 +1,5 @@
+# 3D Graphics and Models
+
 A OpenGL project to load OBJ models into a 3D Space we can use a 3D camera to navigate around and interact with the models. 
 
 The Camera allows:
