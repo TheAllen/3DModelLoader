@@ -27,3 +27,6 @@ Loading a free Sylvanas model I found online in Wireframe mode.
 ## Screenshot
 Screen shot of the OBJ file loading into the project in wireframe mode.
 ![](sylvanasImage.png)
+
+A simple robot model in wireframe mode.
+![](robot.png)
