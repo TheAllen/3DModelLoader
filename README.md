@@ -2,6 +2,9 @@
 
 A OpenGL project to load OBJ models into a 3D Space we can use a 3D camera to navigate around and interact with the models. 
 
+## About
+Implemented a quaternion rotation camera to avoid gimbel lock.
+
 The Camera allows:
 - yaw (mouse left, right)
 - pitch (mouse up, down)
